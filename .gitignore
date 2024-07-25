@@ -1,0 +1,60 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+cdk.context.json
+
+# CDK stack application
+!lib/webAppStack/userdata.sh
+
+# Virtual environment
+bin/
+!bin/*.ts
+etc/
+lib/python*
+pyvenv.cfg
+share/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+.env.*
+
+# Streamlit specific
+.streamlit/secrets.toml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE specific files (optional, depending on your setup)
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Compiled Python files
+*.pyc
+
+# Package files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+
+# Jupyter Notebook
+.ipynb_checkpoints

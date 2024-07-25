@@ -4,6 +4,7 @@ import lib as glib
 # Page configuration
 st.set_page_config(layout="wide", page_icon="⚙️", page_title="TIG Ad Image Studio", menu_items={
     'Get help': "https://github.com/madebybk/tig-ad-image-studio",
+    'About': "https://github.com/madebybk/tig-ad-image-studio",
 })
 
 # Custom CSS
@@ -17,9 +18,6 @@ st.markdown("""
         footer {visibility: hidden;}
         #stDecoration {display:none;}
         [data-testid="StyledFullScreenButton"] {display: none;}
-        body {
-            background-color: #f5f5dc;
-        }
         [data-testid="stSidebar"][aria-expanded="true"] > div:first-child {
             width: 35%;
         }
@@ -41,6 +39,7 @@ st.markdown('''#### Creating Custom Advertisement Images with Real Products Usin
 st.markdown('''- This demo showcases how to easily create advertisement images with Amazon Bedrock using Amazon TIG.''')
 st.markdown('''- You can find the code on [Github](https://github.com/madebybk/tig-ad-image-studio).''')
 st.divider()
+
 # Create a container for the entire layout
 main_container = st.container()
 

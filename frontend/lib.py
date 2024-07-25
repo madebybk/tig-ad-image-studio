@@ -50,7 +50,7 @@ def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_m
     body = {
         "taskType": painting_mode,
         "imageGenerationConfig": {
-            "numberOfImages": 1,  # Number of variations to generate
+            "numberOfImages": 5,  # Number of variations to generate
             "quality": "premium",  # Allowed values are "standard" and "premium"
             "height": target_height,
             "width": target_width,
@@ -85,9 +85,15 @@ def get_titan_response_image(response):
     
     images = response.get('images')
     
-    image_data = base64.b64decode(images[0])
+    image_data_list = []
+    for image in images:
+        image_data = base64.b64decode(image)
+        image_data_list.append(BytesIO(image_data))
 
-    return BytesIO(image_data)
+    # image_data = base64.b64decode(images[0])
+
+    # return BytesIO(image_data)
+    return image_data_list
 
 
 def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):

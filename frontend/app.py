@@ -26,6 +26,11 @@ st.markdown("""
             margin-left: -35%;
         }
         .stApp > header { background-color: #232f3e; }
+        div[data-testid="stStatusWidget"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+        }
     </style>
 """, unsafe_allow_html=True)
 

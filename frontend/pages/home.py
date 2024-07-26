@@ -34,10 +34,19 @@ def home():
             
             st.subheader("Product Description")
             
-            mask_prompt = st.text_input("Describe your product in 5 words or less:", help="Be concise and descriptive")
+            mask_prompt = st.text_input(
+                label="Describe your product in 5 words or less:",
+                help="Be concise and descriptive",
+                value="a handbag"
+            )
 
             st.subheader("Generation Settings")
-            prompt_text = st.text_area("Prompt text:", height=100, help="The prompt text")
+            prompt_text = st.text_area(
+                label="Prompt text:",
+                height=100,
+                help="The prompt text",
+                value="a handbag in a luxury hotel"
+            )
             painting_mode = "OUTPAINTING"
             
             generate_button = st.button("Generate", type="primary")

@@ -109,3 +109,5 @@ def examples():
     exampleContent("images/1_handbag.png", "a handbag", "a handbag in a luxury hotel", "example_1")
     st.divider()
     exampleContent("images/2_tumbler.png", "a green tumbler", "A green tumbler on a kitchen counter, green plants in the background", "example_2")
+    st.divider()
+    exampleContent("images/3_sofa.png", "a beige sofa", "A sofa in a simple beige walls with galleries, classic marble floors", "example_3")

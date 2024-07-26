@@ -52,28 +52,13 @@ def home():
                     image_bytes = uploaded_image_file.getvalue()
                 else:
                     image_bytes = glib.get_bytes_from_file("images/1_handbag.png")
-                
-                if masking_mode == 'Image':
-                    if uploaded_mask_file:
-                        mask_bytes = uploaded_mask_file.getvalue()
-                    else:
-                        mask_bytes = glib.get_bytes_from_file("images/mask1.png")
-                    
-                    st.session_state.generated_images = glib.get_image_from_model(
-                        prompt_content=prompt_text, 
-                        image_bytes=image_bytes,
-                        masking_mode=masking_mode,
-                        mask_bytes=mask_bytes,
-                        painting_mode=painting_mode
-                    )
-                else:
-                    st.session_state.generated_images = glib.get_image_from_model(
-                        prompt_content=prompt_text, 
-                        image_bytes=image_bytes,
-                        masking_mode=masking_mode,
-                        mask_prompt=mask_prompt,
-                        painting_mode=painting_mode
-                    )
+                st.session_state.generated_images = glib.get_image_from_model(
+                    prompt_content=prompt_text, 
+                    image_bytes=image_bytes,
+                    masking_mode="Prompt",
+                    mask_prompt=mask_prompt,
+                    painting_mode=painting_mode
+                )
 
         # Display images and download buttons
         if st.session_state.generated_images is not None:

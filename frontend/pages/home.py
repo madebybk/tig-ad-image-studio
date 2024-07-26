@@ -8,9 +8,9 @@ def home():
 
     # Title
     st.title("TIG Ad Image Studio")
-    st.markdown('''#### Creating Custom Advertisement Images with Real Products Using Amazon Titan Image Generator (TIG)''')
-    st.markdown('''- This demo showcases how to easily create advertisement images with Amazon Bedrock using Amazon TIG.''')
-    st.markdown('''- You can find the code on [Github](https://github.com/madebybk/tig-ad-image-studio).''')
+    st.markdown('''#### Amazon Titan Image Generator(TIG)를 사용하여 실제 상품으로 맞춤 광고 이미지 만들기''')
+    st.markdown('''- 이 데모는 Amazon TIG를 사용하여 Amazon Bedrock으로 광고 이미지를 쉽게 제작하는 방법을 보여줍니다.''')
+    st.markdown('''- [Github](https://github.com/madebybk/tig-ad-image-studio)에서 코드를 찾을 수 있습니다.''')
     st.divider()
 
     # Create a container for the entire layout
@@ -37,7 +37,7 @@ def home():
             mask_prompt = st.text_input(
                 label="Describe your product in 5 words or less:",
                 help="Be concise and descriptive",
-                value="a handbag"
+                placeholder="핸드백"
             )
 
             st.subheader("Generation Settings")
@@ -45,7 +45,7 @@ def home():
                 label="Prompt text:",
                 height=100,
                 help="The prompt text",
-                value="a handbag in a luxury hotel"
+                placeholder="5성급 호텔 안에 있는 핸드백, 반고흐 스타일"
             )
             painting_mode = "OUTPAINTING"
             

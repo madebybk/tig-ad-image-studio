@@ -3,7 +3,7 @@ from streamlit_navigation_bar import st_navbar
 import pages as pg
 
 st.set_page_config(layout="wide", page_icon="🎨", page_title="TIG Ad Image Studio", initial_sidebar_state="collapsed")
-page = st_navbar(["TIG Ad Generator Image", "Examples"])
+page = st_navbar(["TIG Ad Image Generator", "More Examples", "Architecture"])
 
 # Custom CSS
 st.markdown("""
@@ -32,7 +32,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-if page == "TIG Ad Generator Image":
+if page == "TIG Ad Image Generator":
     pg.home()
-elif page == "Examples":
+elif page == "More Examples":
     pg.examples()
+elif page == "Architecture":
+    pg.architecture()

@@ -1,7 +1,10 @@
 import streamlit as st
 import lib as glib
 
-def exampleContent(mask_prompt_val, prompt_text_val, content_key):
+def exampleContent(input_image, mask_prompt_val, prompt_text_val, content_key):
+    st.markdown("## Prompt Examples")
+    st.info("여기에 나오는 예시를 통해 여러 프롬프트 방식으로 다양한 이미지 결과물을 생성할 수 있다는 것을 보실 수 있습니다. 프롬프트와 결과물의 상관관계를 보여줄 수 있도록 예시는 영어로 준비되어있습니다.", icon="ℹ")
+
     # Create a separate session for each example content
     if content_key not in st.session_state:
         st.session_state[content_key] = None
@@ -27,7 +30,7 @@ def exampleContent(mask_prompt_val, prompt_text_val, content_key):
                 uploaded_image_preview = glib.get_bytesio_from_bytes(uploaded_image_file.getvalue())
                 st.image(uploaded_image_preview)
             else:
-                st.image("images/1_handbag.png")
+                st.image(input_image)
             
             st.subheader("Product Description")
             
@@ -63,7 +66,7 @@ def exampleContent(mask_prompt_val, prompt_text_val, content_key):
                 if uploaded_image_file:
                     image_bytes = uploaded_image_file.getvalue()
                 else:
-                    image_bytes = glib.get_bytes_from_file("images/1_handbag.png")
+                    image_bytes = glib.get_bytes_from_file(input_image)
 
                 # Get generated images, translated masking prompt, and translated prompt text
                 bedrock_output = glib.get_image_from_model(
@@ -103,6 +106,6 @@ def exampleContent(mask_prompt_val, prompt_text_val, content_key):
                             )
 
 def examples():
-    exampleContent("a handbag", "a handbag in a luxury hotel", "example_1")
+    exampleContent("images/1_handbag.png", "a handbag", "a handbag in a luxury hotel", "example_1")
     st.divider()
-    exampleContent("a handbag", "a handbag in behind a new york city skyline", "example_2")
+    exampleContent("images/2_tumbler.png", "a green tumbler", "A green tumbler on a kitchen counter, green plants in the background", "example_2")

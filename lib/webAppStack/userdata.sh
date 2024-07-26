@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Update packages
-apt-get update -y
+sudo apt-get update -y
 
 # Install required packages
-apt-get install -y ec2-instance-connect git python3-pip python3.8-venv
+sudo apt-get install -y ec2-instance-connect git python3-pip python3.8-venv
 
 # Clone repository
 cd /home/ubuntu

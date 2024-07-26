@@ -159,7 +159,7 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
     
-    output = get_titan_response_image(response)
+    output_image = get_titan_response_image(response)
     
-    return output
+    return [output_image, translated_mask_prompt, translated_prompt_content]
 

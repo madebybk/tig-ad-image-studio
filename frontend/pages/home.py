@@ -61,13 +61,21 @@ def home():
                     image_bytes = uploaded_image_file.getvalue()
                 else:
                     image_bytes = glib.get_bytes_from_file("images/1_handbag.png")
-                st.session_state.generated_images = glib.get_image_from_model(
+
+                # Get generated images, translated masking prompt, and translated prompt text
+                bedrock_output = glib.get_image_from_model(
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
                     masking_mode="Prompt",
                     mask_prompt=mask_prompt,
                     painting_mode=painting_mode
-                )
+                ) 
+
+                st.write("Updated mask prompt:")
+                st.code(bedrock_output[1], language="markdown")
+                st.write("Updated prompt text:")
+                st.code(bedrock_output[2], language="markdown")
+                st.session_state.generated_images = bedrock_output[0]
 
         # Display images and download buttons
         if st.session_state.generated_images is not None:

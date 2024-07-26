@@ -34,18 +34,7 @@ def home():
             
             st.subheader("Product Description")
             
-            masking_mode = st.radio("Masking mode:", ["Prompt", "Image"], horizontal=True)
-            
-            if masking_mode == 'Image':
-                uploaded_mask_file = st.file_uploader("Select an image mask", type=['png', 'jpg'])
-                
-                if uploaded_mask_file:
-                    uploaded_mask_preview = glib.get_bytesio_from_bytes(uploaded_mask_file.getvalue())
-                    st.image(uploaded_mask_preview)
-                else:
-                    st.image("images/mask1.png")
-            else:
-                mask_prompt = st.text_input("Describe your product in 5 words or less:", help="Be concise and descriptive")
+            mask_prompt = st.text_input("Describe your product in 5 words or less:", help="Be concise and descriptive")
 
             st.subheader("Generation Settings")
             prompt_text = st.text_area("Prompt text:", height=100, help="The prompt text")

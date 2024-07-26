@@ -37,6 +37,51 @@ def get_bytes_from_file(file_path):
     return file_bytes
 
 
+def get_claude_response_text(response):
+
+    response = json.loads(response.get('body').read())
+
+    return response['content'][0]['text']
+
+
+def get_claude_mask_prompt_request_body(mask_prompt):
+    system_prompt = """
+    If the input language is in English, respond with the exact same input and only the exact same input. Do not add or remove any words.
+    If the input langugae is NOT in English, translate the input to English and return only the translated response. Do not add or remove any words after translation.
+    """
+    user_message = {"role": "user", "content": mask_prompt}
+    assistant_message =  {"role": "assistant", "content": ""}
+    messages = [user_message, assistant_message]
+    
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1000,
+        "system": system_prompt,
+        "messages": messages
+    }
+
+    return json.dumps(body)
+
+
+def get_claude_prompt_content_request_body(prompt_content):
+    system_prompt = """
+    If the input language is in English, respond with the exact same input and only the exact same input. Do not add or remove any words.
+    If the input langugae is NOT in English, translate the input to English and return only the translated response. Do not add or remove any words after translation.
+    """
+    user_message = {"role": "user", "content": prompt_content}
+    assistant_message =  {"role": "assistant", "content": ""}
+    messages = [user_message, assistant_message]
+    
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1000,
+        "system": system_prompt,
+        "messages": messages
+    }
+
+    return json.dumps(body)
+
+
 def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt):
     
     original_image = get_image_from_bytes(image_bytes)
@@ -100,10 +145,19 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     session = boto3.Session()
     
     bedrock = session.client(service_name='bedrock-runtime') #creates a Bedrock client
+
+    mask_prompt_request_body = get_claude_mask_prompt_request_body(mask_prompt)
+    prompt_content_request_body = get_claude_prompt_content_request_body(prompt_content)
+
+    mask_prompt_response = bedrock.invoke_model(body=mask_prompt_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
+    prompt_content_response = bedrock.invoke_model(body=prompt_content_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
+
+    translated_mask_prompt = get_claude_response_text(mask_prompt_response)
+    translated_prompt_content = get_claude_response_text(prompt_content_response)
     
-    body = get_titan_image_masking_request_body(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt)
+    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, translated_mask_prompt)
     
-    response = bedrock.invoke_model(body=body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
+    response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
     
     output = get_titan_response_image(response)
     

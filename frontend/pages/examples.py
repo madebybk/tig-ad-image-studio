@@ -2,9 +2,6 @@ import streamlit as st
 import lib as glib
 
 def exampleContent(input_image, mask_prompt_val, prompt_text_val, content_key):
-    st.markdown("## Prompt Examples")
-    st.info("여기에 나오는 예시를 통해 여러 프롬프트 방식으로 다양한 이미지 결과물을 생성할 수 있다는 것을 보실 수 있습니다. 프롬프트와 결과물의 상관관계를 보여줄 수 있도록 예시는 영어로 준비되어있습니다.", icon="ℹ")
-
     # Create a separate session for each example content
     if content_key not in st.session_state:
         st.session_state[content_key] = None
@@ -106,6 +103,8 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, content_key):
                             )
 
 def examples():
+    st.markdown("## Prompt Examples")
+    st.info("여기에 나오는 예시를 통해 여러 프롬프트 방식으로 다양한 이미지 결과물을 생성할 수 있다는 것을 보실 수 있습니다. 프롬프트와 결과물의 상관관계를 보여줄 수 있도록 예시는 영어로 준비되어있습니다.", icon="ℹ")
     exampleContent("images/1_handbag.png", "a handbag", "a handbag in a luxury hotel", "example_1")
     st.divider()
     exampleContent("images/2_tumbler.png", "a green tumbler", "A green tumbler on a kitchen counter, green plants in the background", "example_2")

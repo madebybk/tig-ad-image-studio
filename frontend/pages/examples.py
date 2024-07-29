@@ -75,30 +75,32 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, prompt_breakdo
                     mask_prompt=mask_prompt,
                     painting_mode=painting_mode
                 ) 
-
-                st.write("Updated mask prompt:")
-                st.code(bedrock_output[1], language="markdown")
-                st.write("Updated prompt text:")
-                st.code(bedrock_output[2], language="markdown")
-                st.session_state[content_key] = bedrock_output[0]
-
+                
+                st.session_state[content_key] = bedrock_output
+                
         # Display images and download buttons
         if st.session_state[content_key] is not None:
             image_width_percentage = 30  # Adjust this value to change image width
             images_per_row = 100 // image_width_percentage
+
+            # Optimized prompts
+            st.write("Updated mask prompt:")
+            st.code(st.session_state[content_key][1], language="markdown")
+            st.write("Updated prompt text:")
+            st.code(st.session_state[content_key][2], language="markdown")
             
-            for i in range(0, len(st.session_state[content_key]), images_per_row):
+            for i in range(0, len(st.session_state[content_key][0]), images_per_row):
                 cols = st.columns([image_width_percentage] * images_per_row)
                 for j, col in enumerate(cols):
-                    if i + j < len(st.session_state[content_key]):
+                    if i + j < len(st.session_state[content_key][0]):
                         with col:
                             # Display the image
-                            st.image(st.session_state[content_key][i + j], use_column_width=True)
+                            st.image(st.session_state[content_key][0][i + j], use_column_width=True)
                             
                             # Add download button
                             st.download_button(
                                 label="⇩",
-                                data=st.session_state[content_key][i + j],
+                                data=st.session_state[content_key][0][i + j],
                                 file_name=f"generated_image_{i+j}.png",
                                 mime="image/png",
                                 key=f"download_{content_key}_{i+j}"  # Unique key for each button

@@ -3,8 +3,8 @@ import lib as glib
 
 def home():
     # Initialize session state to store generated images
-    if 'generated_images' not in st.session_state:
-        st.session_state.generated_images = None
+    if 'main_page' not in st.session_state:
+        st.session_state.main_page = None
 
     # Title
     st.title("TIG Ad Image Studio")
@@ -71,29 +71,32 @@ def home():
                     painting_mode=painting_mode
                 ) 
 
-                st.write("Updated mask prompt:")
-                st.code(bedrock_output[1], language="markdown")
-                st.write("Updated prompt text:")
-                st.code(bedrock_output[2], language="markdown")
-                st.session_state.generated_images = bedrock_output[0]
+                # Save the generated images in the session
+                st.session_state.main_page = bedrock_output
 
         # Display images and download buttons
-        if st.session_state.generated_images is not None:
+        if st.session_state.main_page is not None:
             image_width_percentage = 30  # Adjust this value to change image width
             images_per_row = 100 // image_width_percentage
+
+            # Optimized prompts
+            st.write("Updated mask prompt:")
+            st.code(st.session_state.main_page[1], language="markdown")
+            st.write("Updated prompt text:")
+            st.code(st.session_state.main_page[2], language="markdown")
             
-            for i in range(0, len(st.session_state.generated_images), images_per_row):
+            for i in range(0, len(st.session_state.main_page[0]), images_per_row):
                 cols = st.columns([image_width_percentage] * images_per_row)
                 for j, col in enumerate(cols):
-                    if i + j < len(st.session_state.generated_images):
+                    if i + j < len(st.session_state.main_page[0]):
                         with col:
                             # Display the image
-                            st.image(st.session_state.generated_images[i + j], use_column_width=True)
+                            st.image(st.session_state.main_page[0][i + j], use_column_width=True)
                             
                             # Add download button
                             st.download_button(
                                 label="⇩",
-                                data=st.session_state.generated_images[i + j],
+                                data=st.session_state.main_page[0][i + j],
                                 file_name=f"generated_image_{i+j}.png",
                                 mime="image/png",
                                 key=f"download_{i+j}"  # Unique key for each button

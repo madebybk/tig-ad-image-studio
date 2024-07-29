@@ -59,7 +59,7 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, content_key):
         st.subheader("Result")
         
         if generate_button:
-            with st.spinner("Generating images... (This may take up to 30 seconds)"):
+            with st.spinner("이미지 생성 중... (30초 정도 걸릴 수 있습니다)"):
                 if uploaded_image_file:
                     image_bytes = uploaded_image_file.getvalue()
                 else:
@@ -105,8 +105,23 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, content_key):
 def examples():
     st.markdown("## Prompt Examples")
     st.info("여기에 나오는 예시를 통해 여러 프롬프트 방식으로 다양한 이미지 결과물을 생성할 수 있다는 것을 보실 수 있습니다. 프롬프트와 결과물의 상관관계를 보여줄 수 있도록 예시는 영어로 준비되어있습니다.", icon="ℹ")
-    exampleContent("images/1_handbag.png", "a handbag", "a handbag in a luxury hotel", "example_1")
+    exampleContent(
+        "images/1_handbag.png",
+        "a handbag",
+        "A luxurious beige handbag displayed in an upscale boutique setting. The bag rests on a polished marble counter. Behind it, elegant glass shelves showcase other high-end accessories. Soft, warm lighting from recessed ceiling fixtures creates a sophisticated ambiance, highlighting the bag's fine details and rich texture. A full-length mirror to the side reflects part of the bag, adding depth to the scene. The overall color palette is neutral and refined, emphasizing the bag's quality and style.",
+        "example_1"
+    )
     st.divider()
-    exampleContent("images/2_tumbler.png", "a green tumbler", "A green tumbler on a kitchen counter, green plants in the background", "example_2")
+    exampleContent(
+        "images/2_tumbler.png", 
+        "A green tumbler", 
+        "A sleek green tumbler on a rustic wooden table. The table is placed on a sunny patio overlooking a lush garden. Soft natural light illuminates the scene, creating gentle shadows and highlighting the tumbler's smooth surface. A slice of lemon and a sprig of fresh mint rest beside the tumbler, suggesting a refreshing beverage. In the background, colorful flowers and green foliage provide a vibrant, natural setting.", 
+        "example_2"
+    )
     st.divider()
-    exampleContent("images/3_sofa.png", "a beige sofa", "A sofa in a simple beige walls with galleries, classic marble floors", "example_3")
+    exampleContent(
+        "images/3_sofa.png", 
+        "A green fabric sofa", 
+        "A comfortable green fabric sofa in a modern, minimalist living room. The room has large floor-to-ceiling windows allowing abundant natural light to flood in, casting soft shadows. The walls are painted in a warm off-white color. A plush area rug in neutral tones sits beneath the sofa. To the left, a sleek side table holds a stylish lamp and a small potted plant. On the right, a contemporary art piece hangs on the wall, adding a pop of color. The overall atmosphere is inviting and serene.", 
+        "example_3"
+    )

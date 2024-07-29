@@ -56,7 +56,7 @@ def home():
         st.subheader("Result")
         
         if generate_button:
-            with st.spinner("Generating images... (This may take up to 30 seconds)"):
+            with st.spinner("이미지 생성 중... (30초 정도 걸릴 수 있습니다)"):
                 if uploaded_image_file:
                     image_bytes = uploaded_image_file.getvalue()
                 else:

@@ -141,7 +141,7 @@ def get_titan_response_image(response):
     return image_data_list
 
 
-def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):
+def get_image_from_model(prompt_content, image_bytes, masking_mode, mask_bytes=None, mask_prompt=None):
     session = boto3.Session()
     
     bedrock = session.client(service_name='bedrock-runtime') #creates a Bedrock client
@@ -155,7 +155,7 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     translated_mask_prompt = get_claude_response_text(mask_prompt_response)
     translated_prompt_content = get_claude_response_text(prompt_content_response)
     
-    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, translated_mask_prompt)
+    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, "OUTPAINTING", masking_mode, mask_bytes, translated_mask_prompt)
     
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
     

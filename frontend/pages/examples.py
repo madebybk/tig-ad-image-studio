@@ -46,7 +46,6 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, prompt_breakdo
                 value=prompt_text_val,
                 key=f"prompt_text_{content_key}"
             )
-            painting_mode = "OUTPAINTING"
             
             generate_button = st.button(
                 label="Generate",
@@ -72,8 +71,7 @@ def exampleContent(input_image, mask_prompt_val, prompt_text_val, prompt_breakdo
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
                     masking_mode="Prompt",
-                    mask_prompt=mask_prompt,
-                    painting_mode=painting_mode
+                    mask_prompt=mask_prompt
                 ) 
                 
                 st.session_state[content_key] = bedrock_output

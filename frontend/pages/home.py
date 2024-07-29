@@ -47,7 +47,6 @@ def home():
                 help="The prompt text",
                 placeholder="5성급 호텔 안에 있는 핸드백, 반고흐 스타일"
             )
-            painting_mode = "OUTPAINTING"
             
             generate_button = st.button("Generate", type="primary")
 
@@ -67,8 +66,7 @@ def home():
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
                     masking_mode="Prompt",
-                    mask_prompt=mask_prompt,
-                    painting_mode=painting_mode
+                    mask_prompt=mask_prompt
                 ) 
 
                 # Save the generated images in the session

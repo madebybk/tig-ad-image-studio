@@ -1,5 +1,6 @@
 import streamlit as st
 import lib as glib
+import requests
 
 def get_input_params(is_val_filled, value):
     if is_val_filled:
@@ -138,15 +139,24 @@ def outpainting_content(input_image, prompt_input_vals, content_key, is_val_fill
                 else:
                     image_bytes = glib.get_bytes_from_file(input_image)
 
-                # Get generated images, translated masking prompt, and translated prompt text
-                bedrock_output = glib.get_image_from_model(
+                
+
+                # # Get generated images, translated masking prompt, and translated prompt text
+                # bedrock_output = glib.get_image_from_model(
+                #     prompt_content=prompt_text, 
+                #     image_bytes=image_bytes,
+                #     painting_mode="OUTPAINTING",
+                #     masking_mode="Prompt",
+                #     mask_prompt=mask_prompt
+                # ) 
+                
+                bedrock_output = glib.query_generate_image_lambda(
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
                     painting_mode="OUTPAINTING",
                     masking_mode="Prompt",
-                    mask_prompt=mask_prompt
-                ) 
-                
+                    mask_prompt=mask_prompt 
+                )
                 st.session_state[content_key] = bedrock_output
                 
         # Display images and download buttons

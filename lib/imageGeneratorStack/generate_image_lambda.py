@@ -1,31 +1,53 @@
-import boto3
-import os
 import json
+import boto3
 import base64
 from PIL import Image
 from io import BytesIO
 from random import randint
-import requests
 
-API_URL = os.environ.get("API_URL")
+def lambda_handler(event, context):
+    # Parse input from the event
+    body = json.loads(event['body'])
+    prompt_content = body['prompt_content']
+    image_bytes = base64.b64decode(body['image_bytes'])
+    painting_mode = body['painting_mode']
+    masking_mode = body['masking_mode']
+    mask_bytes = base64.b64decode(body['mask_bytes']) if 'mask_bytes' in body else None
+    mask_prompt = body['mask_prompt'] if 'mask_prompt' in body else None
 
+    # Process the image
+    result = get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt)
+    
+    # Prepare the response
+    output_images = [base64.b64encode(img.getvalue()).decode('utf-8') for img in result[0]]
+    response = {
+        'statusCode': 200,
+        'body': json.dumps({
+            'images': output_images,
+            'translated_mask_prompt': result[1],
+            'translated_prompt_content': result[2]
+        }),
+        'headers': {
+            'Content-Type': 'application/json'
+        }
+    }
+    
+    return response
+
+# Utility functions
 
 def get_bytesio_from_bytes(image_bytes):
-    image_io = BytesIO(image_bytes)
-    return image_io
-
+    return BytesIO(image_bytes)
 
 def get_base64_from_bytes(image_bytes):
     resized_io = get_bytesio_from_bytes(image_bytes)
     img_str = base64.b64encode(resized_io.getvalue()).decode("utf-8")
     return img_str
 
-
 def get_image_from_bytes(image_bytes):
     image_io = BytesIO(image_bytes)
     image = Image.open(image_io)
     return image
-    
 
 def get_png_base64(image):
     png_io = BytesIO()
@@ -33,20 +55,9 @@ def get_png_base64(image):
     img_str = base64.b64encode(png_io.getvalue()).decode("utf-8")
     return img_str
 
-
-#load the bytes from a file on disk
-def get_bytes_from_file(file_path):
-    with open(file_path, "rb") as image_file:
-        file_bytes = image_file.read()
-    return file_bytes
-
-
 def get_claude_response_text(response):
-
     response = json.loads(response.get('body').read())
-
     return response['content'][0]['text']
-
 
 def get_claude_mask_prompt_request_body(mask_prompt):
     system_prompt = """
@@ -65,7 +76,6 @@ def get_claude_mask_prompt_request_body(mask_prompt):
     }
 
     return json.dumps(body)
-
 
 def get_claude_outpainting_prompt_content_request_body(prompt_content):
     system_prompt = """
@@ -115,7 +125,6 @@ def get_claude_outpainting_prompt_content_request_body(prompt_content):
 
     return json.dumps(body)
 
-
 def get_claude_inpainting_prompt_content_request_body(prompt_content):
     system_prompt = """
     You are an expert prompt engineer for the Amazon Titan Image Generator. Your task is to translate inputs to English and create optimal prompts (in English) for inpainting based on user inputs. You will receive various details about the desired image, and your job is to synthesize this information into a cohesive, detailed prompt (in English) that will guide Titan in generating a high-quality image.
@@ -163,39 +172,33 @@ def get_claude_inpainting_prompt_content_request_body(prompt_content):
 
     return json.dumps(body)
 
-
 def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt):
-    
     original_image = get_image_from_bytes(image_bytes)
-    
     target_width, target_height = original_image.size
-    
     image_base64 = get_base64_from_bytes(image_bytes)
-    
-    mask_base64 = get_base64_from_bytes(mask_bytes)
+    mask_base64 = get_base64_from_bytes(mask_bytes) if mask_bytes else None
     
     body = {
         "taskType": painting_mode,
         "imageGenerationConfig": {
-            "numberOfImages": 5,  # Number of variations to generate
-            "quality": "premium",  # Allowed values are "standard" and "premium"
+            "numberOfImages": 5,
+            "quality": "premium",
             "height": target_height,
             "width": target_width,
             "cfgScale": 8.0,
-            "seed": randint(0, 100000),  # Use a random seed
+            "seed": randint(0, 100000),
         },
     }
     
     params = {
         "image": image_base64,
-        "text": prompt_content,  # What should be displayed in the final image
+        "text": prompt_content,
     }
     
     if masking_mode == 'Image':
         params['maskImage'] = mask_base64
     else:
         params['maskPrompt'] = mask_prompt
-        
     
     if painting_mode == 'OUTPAINTING':
         params['outPaintingMode'] = 'DEFAULT'
@@ -205,28 +208,17 @@ def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_m
     
     return json.dumps(body)
 
-
 def get_titan_response_image(response):
-
     response = json.loads(response.get('body').read())
-    
     images = response.get('images')
-    
     image_data_list = []
     for image in images:
         image_data = base64.b64decode(image)
         image_data_list.append(BytesIO(image_data))
-
-    # image_data = base64.b64decode(images[0])
-
-    # return BytesIO(image_data)
     return image_data_list
 
-
 def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):
-    session = boto3.Session()
-    
-    bedrock = session.client(service_name='bedrock-runtime') #creates a Bedrock client
+    bedrock = boto3.client(service_name='bedrock-runtime')
 
     mask_prompt_request_body = get_claude_mask_prompt_request_body(mask_prompt)
     if painting_mode == "OUTPAINTING":
@@ -240,9 +232,6 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     translated_mask_prompt = get_claude_response_text(mask_prompt_response)
     translated_prompt_content = get_claude_response_text(prompt_content_response)
 
-    print("mask prompt:", translated_mask_prompt)
-    print("prompt content:", translated_prompt_content)
-    
     image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, translated_mask_prompt)
     
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
@@ -250,27 +239,3 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     output_image = get_titan_response_image(response)
     
     return [output_image, translated_mask_prompt, translated_prompt_content]
-
-
-def query_generate_image_lambda(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):
-    payload = {
-        "prompt_content": prompt_content,
-        "image_bytes": get_base64_from_bytes(image_bytes),
-        "painting_mode": painting_mode,
-        "masking_mode": masking_mode,
-        "mask_prompt": mask_prompt
-    }
-
-    response = requests.post(API_URL, json=payload)
-
-    if response.status_code == 200: 
-        result = response.json()
-        output_images = [get_bytesio_from_bytes(base64.b64decode(img)) for img in result['images']]
-        translated_mask_prompt = result['translated_mask_prompt']
-        translated_prompt_content = result['translated_prompt_content']
-    
-        return [output_images, translated_mask_prompt, translated_prompt_content]
-    else:
-        raise Exception(f"API call failed with status code {response.status_code}: {response.text}")
-
-    

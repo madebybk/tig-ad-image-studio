@@ -110,14 +110,21 @@ def inpainting_content(input_image, prompt_input_vals, content_key, is_val_fille
                 else:
                     image_bytes = glib.get_bytes_from_file(input_image)
 
-                # Get generated images, translated masking prompt, and translated prompt text
-                bedrock_output = glib.get_image_from_model(
+                bedrock_output = glib.query_generate_image_lambda(
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
                     painting_mode="INPAINTING",
                     masking_mode="Prompt",
-                    mask_prompt=mask_prompt
-                ) 
+                    mask_prompt=mask_prompt 
+                )
+                # # Get generated images, translated masking prompt, and translated prompt text
+                # bedrock_output = glib.get_image_from_model(
+                #     prompt_content=prompt_text, 
+                #     image_bytes=image_bytes,
+                #     painting_mode="INPAINTING",
+                #     masking_mode="Prompt",
+                #     mask_prompt=mask_prompt
+                # ) 
                 
                 st.session_state[content_key] = bedrock_output
                 

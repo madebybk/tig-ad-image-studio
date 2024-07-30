@@ -65,8 +65,31 @@ def get_claude_mask_prompt_request_body(mask_prompt):
 
 def get_claude_prompt_content_request_body(prompt_content):
     system_prompt = """
-    If the input language is in English, respond with the exact same input and only the exact same input. Do not add or remove any words.
-    If the input langugae is NOT in English, translate the input to English and return only the translated response. Do not add or remove any words after translation.
+    You are an expert prompt engineer for the Amazon Titan Image Generator. Your task is to create optimal prompts based on user inputs. You will receive various details about the desired image, and your job is to synthesize this information into a cohesive, detailed prompt that will guide Titan in generating a high-quality image.
+    Follow these guidelines when crafting the prompt:
+
+    1. VERY IMPORTANT: If any part of the input is not entirely in English, translate it to English.
+
+    2. Analyze the prompt and identify opportunities for enhancement based on these key principles:
+    - Use vivid, specific language to capture key visual details
+    - Consider the overall style and tone
+    - Structure the prompt logically, using punctuation effectively
+    - Add guiding details about objects, colors, lighting, and background
+    - Include relevant context that complements the main subject
+    - Specify lighting and atmosphere to set the mood
+    - For product-related prompts, create a narrative or lifestyle context
+
+    3. Expand and refine the prompt, incorporating the above principles. Aim for a prompt length of 2-4 sentences. VERY IMPORTANT: The prompt has to be 512 characters or less.
+    
+    4. If the original prompt lacked specific style guidance, consider adding style keywords like "photorealistic", "cinematic lighting", etc.
+
+    5. Check again that the prompt is in English and ONLY in English.
+
+    Remember, your goal is to create a prompt that will result in a detailed, cohesive, and visually striking image that matches the user's intentions.
+
+    VERY IMPORTANT: The output will only contain the updated prompt. Do not add any words.
+    VERY IMPORTANT: The output has to be 512 characters or less.
+    VERY IMPORTANT: The output must be in English and only in English
     """
     user_message = {"role": "user", "content": prompt_content}
     assistant_message =  {"role": "assistant", "content": ""}
@@ -154,6 +177,9 @@ def get_image_from_model(prompt_content, image_bytes, masking_mode, mask_bytes=N
 
     translated_mask_prompt = get_claude_response_text(mask_prompt_response)
     translated_prompt_content = get_claude_response_text(prompt_content_response)
+
+    print("mask prompt:", translated_mask_prompt)
+    print("prompt content:", translated_prompt_content)
     
     image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, "OUTPAINTING", masking_mode, mask_bytes, translated_mask_prompt)
     

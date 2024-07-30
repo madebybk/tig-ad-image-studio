@@ -35,18 +35,88 @@ def home():
             st.subheader("Product Description")
             
             mask_prompt = st.text_input(
-                label="Describe your product in 5 words or less:",
-                help="Be concise and descriptive",
+                label="제품 설명(필수):",
+                help="간략하게 5단어 이하로 입력해 주세요",
                 placeholder="핸드백"
             )
 
             st.subheader("Generation Settings")
-            prompt_text = st.text_area(
-                label="Prompt text:",
-                height=100,
-                help="The prompt text",
-                placeholder="5성급 호텔 안에 있는 핸드백, 반고흐 스타일"
+
+            st.info("모두 선택 사항이지만, 더 많은 정보를 입력할수록 더 정확한 이미지 결과물을 얻을 수 있습니다.", icon="ℹ")
+
+            prompt_background = st.text_input(
+                label="배경/환경:",
+                help="주요 대상이 위치한 장소",
+                placeholder="고급 부티크 매장"
             )
+
+            prompt_lighting = st.text_input(
+                label="조명:",
+                help="장면의 빛의 종류와 질",
+                placeholder="천장의 매입등에서 나오는 부드럽고 따뜻한 조명"
+            )
+
+            prompt_style = st.text_input(
+                label="스타일:",
+                help="원하는 예술적 스타일 또는 사진 기법",
+                placeholder="럭셔리하고 세련된"
+            )
+
+            prompt_atmosphere = st.text_input(
+                label="분위기/감정:",
+                help="이미지의 전반적인 느낌이나 감정",
+                placeholder="세련되고 고급스러운 분위기"
+            )
+
+            prompt_colors = st.text_input(
+                label="색상:",
+                help="특정 색상 구성 또는 두드러진 색상",
+                placeholder="베이지색 핸드백, 중성적이고 정제된 전체 색상 팔레트"
+            )
+
+            prompt_composition = st.text_input(
+                label="구도:",
+                help="특정 프레임이나 레이아웃 선호도",
+                placeholder="핸드백이 카운터 위에 있고, 배경에 선반이 있으며, 옆에 거울이 있음"
+            )
+
+            prompt_pose = st.text_input(
+                label="행동/포즈:",
+                help="대상이 하고 있는 행동",
+                placeholder="핸드백이 카운터 위에 놓여있음"
+            )
+
+            prompt_time = st.text_input(
+                label="시간대/계절:",
+                help="장면이 일어나는 시기",
+                placeholder="낮 시간"
+            )
+
+            prompt_texture = st.text_input(
+                label="질감:",
+                help="강조하고 싶은 특정 질감 요소",
+                placeholder="핸드백의 섬세한 디테일과 풍부한 질감"
+            )
+
+            prompt_additional = st.text_input(
+                label="추가 사항:",
+                help="포함할 다른 물체나 세부 사항",
+                placeholder="광택 있는 대리석 카운터, 우아한 유리 선반, 다른 고급 액세서리들, 전신 거울"
+            )
+
+            prompt_text = "{" + f"""
+            "주요 대상": {mask_prompt},
+            "배경/환경": {prompt_background},
+            "조명": {prompt_lighting},
+            "스타일": {prompt_style},
+            "분위기/감정": {prompt_atmosphere},
+            "Colors": {prompt_colors},
+            "Composition": {prompt_composition},
+            "Action/Pose": {prompt_pose},
+            "Time of day/Season": {prompt_time},
+            "Textures": {prompt_texture},
+            "Additional elements": {prompt_additional}
+            """ + "}"
             
             generate_button = st.button("Generate", type="primary")
 
@@ -79,9 +149,9 @@ def home():
 
             # Optimized prompts
             st.write("Updated mask prompt:")
-            st.code(st.session_state.main_page[1], language="markdown")
+            st.info(st.session_state.main_page[1]) 
             st.write("Updated prompt text:")
-            st.code(st.session_state.main_page[2], language="markdown")
+            st.info(st.session_state.main_page[2])
             
             for i in range(0, len(st.session_state.main_page[0]), images_per_row):
                 cols = st.columns([image_width_percentage] * images_per_row)

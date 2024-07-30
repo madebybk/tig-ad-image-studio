@@ -1,7 +1,13 @@
 import streamlit as st
 import lib as glib
 
-def example_content(input_image, prompt_input_vals, content_key):
+def get_input_params(is_val_filled, value):
+    if is_val_filled:
+        return {"value": value}
+    else:
+        return {"placeholder": value}
+
+def outpainting_content(input_image, prompt_input_vals, content_key, is_val_filled):
     # Create a separate session for each example content
     if content_key not in st.session_state:
         st.session_state[content_key] = None
@@ -34,7 +40,7 @@ def example_content(input_image, prompt_input_vals, content_key):
             mask_prompt = st.text_input(
                 label="제품 설명(필수):",
                 help="간략하게 5단어 이하로 입력해 주세요",
-                value=prompt_input_vals[content_key]["mask_prompt"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["mask_prompt"])
             )
 
             st.subheader("Generation Settings")
@@ -44,61 +50,61 @@ def example_content(input_image, prompt_input_vals, content_key):
             prompt_background = st.text_input(
                 label="배경/환경:",
                 help="주요 대상이 위치한 장소",
-                value=prompt_input_vals[content_key]["prompt_background"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_background"])
             )
 
             prompt_lighting = st.text_input(
                 label="조명:",
                 help="장면의 빛의 종류와 질",
-                value=prompt_input_vals[content_key]["prompt_lighting"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_lighting"])
             )
 
             prompt_style = st.text_input(
                 label="스타일:",
                 help="원하는 예술적 스타일 또는 사진 기법",
-                value=prompt_input_vals[content_key]["prompt_style"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_style"])
             )
 
             prompt_atmosphere = st.text_input(
                 label="분위기/감정:",
                 help="이미지의 전반적인 느낌이나 감정",
-                value=prompt_input_vals[content_key]["prompt_atmosphere"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_atmosphere"])
             )
 
             prompt_colors = st.text_input(
                 label="색상:",
                 help="특정 색상 구성 또는 두드러진 색상",
-                value=prompt_input_vals[content_key]["prompt_colors"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_colors"])
             )
 
             prompt_composition = st.text_input(
                 label="구도:",
                 help="특정 프레임이나 레이아웃 선호도",
-                value=prompt_input_vals[content_key]["prompt_composition"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_composition"])
             )
 
             prompt_pose = st.text_input(
                 label="행동/포즈:",
                 help="대상이 하고 있는 행동",
-                value=prompt_input_vals[content_key]["prompt_pose"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_pose"])
             )
 
             prompt_time = st.text_input(
                 label="시간대/계절:",
                 help="장면이 일어나는 시기",
-                value=prompt_input_vals[content_key]["prompt_time"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_time"])
             )
 
             prompt_texture = st.text_input(
                 label="질감:",
                 help="강조하고 싶은 특정 질감 요소",
-                value=prompt_input_vals[content_key]["prompt_texture"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_texture"])
             )
 
             prompt_additional = st.text_input(
                 label="추가 사항:",
                 help="포함할 다른 물체나 세부 사항",
-                value=prompt_input_vals[content_key]["prompt_additional"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_additional"])
             )
 
             prompt_text = "{" + f"""
@@ -171,7 +177,7 @@ def example_content(input_image, prompt_input_vals, content_key):
                                 key=f"download_{content_key}_{i+j}"  # Unique key for each button
                             )
 
-def examples():
+def outpainting():
     st.markdown("## Prompt Examples")
     st.info("여기에 나오는 예시들은 Outpainting 기능으로 이미지의 가장자리를 확장하여 새로운 컨텐츠를 추가하는 기술을 보실 수 있습니다.", icon="ℹ")
     st.markdown("## Prompt Techniques")
@@ -258,32 +264,37 @@ def examples():
         },
     }
 
-    example_content(
-        "images/1_handbag.png",
-        prompt_input_vals,
-        "handbag"
+    outpainting_content(
+        input_image="images/1_handbag.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="handbag",
+        is_val_filled=True
     )
     st.divider()
-    example_content(
-        "images/2_tumbler.png", 
-        prompt_input_vals,
-        "tumbler"
+    outpainting_content(
+        input_image="images/2_tumbler.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="tumbler",
+        is_val_filled=True
     )
     st.divider()
-    example_content(
-        "images/3_sofa.png", 
-        prompt_input_vals,
-        "sofa"
+    outpainting_content(
+        input_image="images/3_sofa.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="sofa",
+        is_val_filled=True
     )
     st.divider()
-    example_content(
-        "images/4_running_shoes.png", 
-        prompt_input_vals,
-        "shoes"
+    outpainting_content(
+        input_image="images/4_running_shoes.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="shoes",
+        is_val_filled=True
     )
     st.divider()
-    example_content(
-        "images/5_coffee_maker.png", 
-        prompt_input_vals,
-        "coffee_maker"
+    outpainting_content(
+        input_image="images/5_coffee_maker.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="coffee_maker",
+        is_val_filled=True
     )

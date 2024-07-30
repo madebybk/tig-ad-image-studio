@@ -1,7 +1,13 @@
 import streamlit as st
 import lib as glib
 
-def image_modification_content(input_image, prompt_input_vals, content_key):
+def get_input_params(is_val_filled, value):
+    if is_val_filled:
+        return {"value": value}
+    else:
+        return {"placeholder": value}
+
+def inpainting_content(input_image, prompt_input_vals, content_key, is_val_filled):
     # Create a separate session for each example content
     if content_key not in st.session_state:
         st.session_state[content_key] = None
@@ -34,19 +40,19 @@ def image_modification_content(input_image, prompt_input_vals, content_key):
             mask_prompt = st.text_input(
                 label="수정할 부분(필수):",
                 help="수정 영역을 간략하게 5단어 이하로 입력해 주세요",
-                value=prompt_input_vals[content_key]["mask_prompt"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["mask_prompt"])
             )
 
             prompt_background = st.text_input(
                 label="원본 이미지(필수):",
                 help="현재 이미지에 대한 간단한 설명",
-                value=prompt_input_vals[content_key]["prompt_original"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_original"])
             )
 
             prompt_lighting = st.text_input(
                 label="새로운 내용(필수):",
                 help="수정 영역에 추가하거나 변경하고 싶은 요소",
-                value=prompt_input_vals[content_key]["prompt_new"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_new"])
             )
 
             st.subheader("Generation Settings")
@@ -56,25 +62,25 @@ def image_modification_content(input_image, prompt_input_vals, content_key):
             prompt_style = st.text_input(
                 label="스타일:",
                 help="원하는 예술적 스타일 또는 사진 기법",
-                value=prompt_input_vals[content_key]["prompt_style"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_style"])
             )
 
             prompt_atmosphere = st.text_input(
                 label="주변 환경과의 조화:",
                 help="원하는 스타일이나 분위기",
-                value=prompt_input_vals[content_key]["prompt_atmosphere"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_atmosphere"])
             )
 
             prompt_colors = st.text_input(
                 label="색상:",
                 help="새로운 요소의 주요 색상",
-                value=prompt_input_vals[content_key]["prompt_colors"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_colors"])
             )
 
             prompt_additional = st.text_input(
                 label="추가 사항:",
                 help="포함하고 싶은 특정 세부 사항",
-                value=prompt_input_vals[content_key]["prompt_additional"]
+                **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_additional"])
             )
 
             prompt_text = "{" + f"""
@@ -143,7 +149,7 @@ def image_modification_content(input_image, prompt_input_vals, content_key):
                                 key=f"download_{content_key}_{i+j}"  # Unique key for each button
                             )
 
-def image_modification():
+def inpainting():
     st.markdown("## Prompt Examples")
     st.info("여기에 나오는 예시들은 Inpainting 기능으로 이미지의 특정 부분을 채우거나 수정하는 기술을 보실 수 있습니다.", icon="ℹ")
     st.markdown("## Prompt Techniques")
@@ -183,14 +189,16 @@ def image_modification():
         },
     }
 
-    image_modification_content(
-        "images/6_apartment.png",
-        prompt_input_vals,
-        "apartment"
+    inpainting_content(
+        input_image="images/6_apartment.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="apartment",
+        is_val_filled=True
     )
     st.divider()
-    image_modification_content(
-        "images/7_sofa_rug.png",
-        prompt_input_vals,
-        "sofa_rug"
+    inpainting_content(
+        input_image="images/7_sofa_rug.png",
+        prompt_input_vals=prompt_input_vals,
+        content_key="sofa_rug",
+        is_val_filled=True
     )

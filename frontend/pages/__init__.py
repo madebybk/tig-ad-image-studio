@@ -1,4 +1,4 @@
 from .home import home
-from .examples import examples
-from .image_modification import image_modification
+from .outpainting import outpainting
+from .inpainting import inpainting
 from .architecture import architecture

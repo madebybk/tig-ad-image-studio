@@ -35,8 +35,8 @@ st.markdown("""
 if page == "TIG Ad Image Studio":
     pg.home()
 elif page == "이미지 생성 예시":
-    pg.examples()
+    pg.outpainting()
 elif page == "이미지 수정 예시":
-    pg.image_modification()
+    pg.inpainting()
 elif page == "Architecture":
     pg.architecture()

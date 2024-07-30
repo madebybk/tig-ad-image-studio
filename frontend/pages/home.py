@@ -10,6 +10,10 @@ def home():
     st.markdown('''- 이 데모는 Amazon TIG를 사용하여 Amazon Bedrock으로 광고 이미지를 쉽게 제작하는 방법을 보여줍니다.''')
     st.markdown('''- [Github](https://github.com/madebybk/tig-ad-image-studio)에서 코드를 찾을 수 있습니다.''')
     st.divider()
+
+    # Outpainting section
+    st.markdown('''#### TIG를 활용해 백그라운드 이미지 생성''')
+    st.success('''이 도구는 TIG의 Outpainting 기능을 활용해 기존 이미지의 가장자리를 확장하여 새로운 컨텐츠를 추가하는 방식을 사용합니다. Outpainting 기능은 위 "이미지 생성 예시" 탭에서 더 자세히 보실 수 있습니다.''')
     
     outpainting_prompt_input_vals = {
         "handbag": {
@@ -31,10 +35,14 @@ def home():
         input_image="images/1_handbag.png",
         prompt_input_vals=outpainting_prompt_input_vals,
         content_key="handbag",
-        is_val_filled=True
+        is_val_filled=False
     )
 
     st.divider()
+
+    # Inpainting section
+    st.markdown('''#### TIG를 활용해 이미지 수정''')
+    st.success('''이 도구는 TIG의 Inpainting 기능을 활용해 기존 이미지의 특정 부분을 채우거나 수정하는 기술을 보실 수 있습니다. Inpainting 기능은 위 "이미지 수정 예시" 탭에서 더 자세히 보실 수 있습니다.''')
 
     inpainting_prompt_input_vals = {
         "apartment": {
@@ -52,5 +60,5 @@ def home():
         input_image="images/6_apartment.png",
         prompt_input_vals=inpainting_prompt_input_vals,
         content_key="apartment",
-        is_val_filled=True
+        is_val_filled=False
     )

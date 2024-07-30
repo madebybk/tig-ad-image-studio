@@ -3,7 +3,7 @@ from streamlit_navigation_bar import st_navbar
 import pages as pg
 
 st.set_page_config(layout="wide", page_icon="🎨", page_title="TIG Ad Image Studio", initial_sidebar_state="collapsed")
-page = st_navbar(["TIG Ad Image Generator", "More Examples", "Architecture"])
+page = st_navbar(["TIG Ad Image Studio", "이미지 생성 예시", "이미지 수정 예시", "Architecture"])
 
 # Custom CSS
 st.markdown("""
@@ -32,9 +32,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-if page == "TIG Ad Image Generator":
+if page == "TIG Ad Image Studio":
     pg.home()
-elif page == "More Examples":
+elif page == "이미지 생성 예시":
     pg.examples()
+elif page == "이미지 수정 예시":
+    pg.image_modification()
 elif page == "Architecture":
     pg.architecture()

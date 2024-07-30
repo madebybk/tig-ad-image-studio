@@ -135,6 +135,7 @@ def home():
                 bedrock_output = glib.get_image_from_model(
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
+                    painting_mode="OUTPAINTING",
                     masking_mode="Prompt",
                     mask_prompt=mask_prompt
                 ) 

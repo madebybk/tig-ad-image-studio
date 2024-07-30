@@ -63,9 +63,9 @@ def get_claude_mask_prompt_request_body(mask_prompt):
     return json.dumps(body)
 
 
-def get_claude_prompt_content_request_body(prompt_content):
+def get_claude_outpainting_prompt_content_request_body(prompt_content):
     system_prompt = """
-    You are an expert prompt engineer for the Amazon Titan Image Generator. Your task is to create optimal prompts based on user inputs. You will receive various details about the desired image, and your job is to synthesize this information into a cohesive, detailed prompt that will guide Titan in generating a high-quality image.
+    You are an expert prompt engineer for the Amazon Titan Image Generator. Your task is to translate intputs to English and create optimal prompts (in English, with fewer than 512 characters) based on user inputs. You will receive various details about the desired image, and your job is to synthesize this information into a cohesive, detailed prompt (in English) that will guide Titan in generating a high-quality image.
     Follow these guidelines when crafting the prompt:
 
     1. VERY IMPORTANT: If any part of the input is not entirely in English, translate it to English.
@@ -79,17 +79,72 @@ def get_claude_prompt_content_request_body(prompt_content):
     - Specify lighting and atmosphere to set the mood
     - For product-related prompts, create a narrative or lifestyle context
 
-    3. Expand and refine the prompt, incorporating the above principles. Aim for a prompt length of 2-4 sentences. VERY IMPORTANT: The prompt has to be 512 characters or less.
+    3. Expand and refine the prompt, incorporating the above principles. Aim for a prompt length of 2-4 sentences. VERY IMPORTANT: The prompt has to be 512 characters or less (including spaces and punctuation).
     
     4. If the original prompt lacked specific style guidance, consider adding style keywords like "photorealistic", "cinematic lighting", etc.
 
-    5. Check again that the prompt is in English and ONLY in English.
+    5. Check again that the prompt is in English and ONLY in English. This is extremely important. Make sure this is your top priority.
 
-    Remember, your goal is to create a prompt that will result in a detailed, cohesive, and visually striking image that matches the user's intentions.
+    6. Check again that the total number of prompt characters is fewer than 512 (including spaces and punctuation). If it's 512 characters or less, shorten the prompt. This is extremely important. Make this your top priority.
+
+    Remember, your goal is to create a prompt (in English) that will result in a detailed, cohesive, and visually striking image that matches the user's intentions.
 
     VERY IMPORTANT: The output will only contain the updated prompt. Do not add any words.
-    VERY IMPORTANT: The output has to be 512 characters or less.
+    VERY IMPORTANT: The output has to be 512 characters or less (including spaces and punctuation).
     VERY IMPORTANT: The output must be in English and only in English
+
+    Before providing the answer, make sure the output is in English and the number of characters is fewer than 512 (including spaces and punctuations).
+    DO NOT provide the output unless the output is in English and only in English and the total number of characters do not exceed 512.
+
+    Provide the English prompt:
+    """
+    user_message = {"role": "user", "content": prompt_content}
+    assistant_message =  {"role": "assistant", "content": ""}
+    messages = [user_message, assistant_message]
+    
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1000,
+        "system": system_prompt,
+        "messages": messages
+    }
+
+    return json.dumps(body)
+
+
+def get_claude_inpainting_prompt_content_request_body(prompt_content):
+    system_prompt = """
+    You are an expert prompt engineer for the Amazon Titan Image Generator. Your task is to translate inputs to English and create optimal prompts (in English) for inpainting based on user inputs. You will receive various details about the desired image, and your job is to synthesize this information into a cohesive, detailed prompt (in English) that will guide Titan in generating a high-quality image.
+    Follow these guidelines when crafting the prompt:
+
+    1. VERY IMPORTANT: If any part of the input is not entirely in English, translate it to English.
+
+    2. Briefly mention the original image and the area to be modified. Analyze the prompt and identify opportunities for enhancement based on these key principles:
+    - Describe the new element(s) in detail, using vivid and specific language.
+    - Incorporate the desired style and mood.
+    - If provided, mention color preferences and specific details to include.
+    - Explain how the new element(s) should integrate with the existing image.
+    - Structure the prompt logically, using commas to separate elements.
+    - If necessary, add style keywords at the end of the prompt.
+
+    3. Keep the prompt length to 2-3 sentences while including all crucial information. VERY IMPORTANT: The prompt has to be 512 characters or less (including spaces and punctuation).
+    
+    4. If the original prompt lacked specific style guidance, consider adding style keywords like "photorealistic", "cinematic lighting", etc.
+
+    5. Check again that the prompt is in English and ONLY in English. This is extremely important.
+
+    6. Check again that the total number of prompt characters is fewer than 512 (including spaces and punctuation). If it's 512 characters or less (including spaces and punctuation), shorten the prompt. This is extremely important.
+
+    Remember, your goal is to create a prompt (in English) that will result in a detailed, cohesive, and visually striking image that matches the user's intentions.
+
+    VERY IMPORTANT: The output will only contain the updated prompt. Do not add any words.
+    VERY IMPORTANT: The output has to be 512 characters or less (including spaces and punctuation).
+    VERY IMPORTANT: The output must be in English and only in English
+
+    Before providing the answer, make sure the output is in English and the number of characters is fewer than 512 (including spaces and punctuations).
+    DO NOT provide the output unless the output is in English and only in English and the total number of characters do not exceed 512.
+
+    Provide the English prompt:
     """
     user_message = {"role": "user", "content": prompt_content}
     assistant_message =  {"role": "assistant", "content": ""}
@@ -164,13 +219,16 @@ def get_titan_response_image(response):
     return image_data_list
 
 
-def get_image_from_model(prompt_content, image_bytes, masking_mode, mask_bytes=None, mask_prompt=None):
+def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):
     session = boto3.Session()
     
     bedrock = session.client(service_name='bedrock-runtime') #creates a Bedrock client
 
     mask_prompt_request_body = get_claude_mask_prompt_request_body(mask_prompt)
-    prompt_content_request_body = get_claude_prompt_content_request_body(prompt_content)
+    if painting_mode == "OUTPAINTING":
+        prompt_content_request_body = get_claude_outpainting_prompt_content_request_body(prompt_content)
+    else:
+        prompt_content_request_body = get_claude_inpainting_prompt_content_request_body(prompt_content)
 
     mask_prompt_response = bedrock.invoke_model(body=mask_prompt_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
     prompt_content_response = bedrock.invoke_model(body=prompt_content_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
@@ -181,7 +239,7 @@ def get_image_from_model(prompt_content, image_bytes, masking_mode, mask_bytes=N
     print("mask prompt:", translated_mask_prompt)
     print("prompt content:", translated_prompt_content)
     
-    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, "OUTPAINTING", masking_mode, mask_bytes, translated_mask_prompt)
+    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, translated_mask_prompt)
     
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
     

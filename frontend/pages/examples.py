@@ -1,7 +1,7 @@
 import streamlit as st
 import lib as glib
 
-def exampleContent(input_image, prompt_input_vals, content_key):
+def example_content(input_image, prompt_input_vals, content_key):
     # Create a separate session for each example content
     if content_key not in st.session_state:
         st.session_state[content_key] = None
@@ -136,6 +136,7 @@ def exampleContent(input_image, prompt_input_vals, content_key):
                 bedrock_output = glib.get_image_from_model(
                     prompt_content=prompt_text, 
                     image_bytes=image_bytes,
+                    painting_mode="OUTPAINTING",
                     masking_mode="Prompt",
                     mask_prompt=mask_prompt
                 ) 
@@ -172,7 +173,7 @@ def exampleContent(input_image, prompt_input_vals, content_key):
 
 def examples():
     st.markdown("## Prompt Examples")
-    st.info("여기에 나오는 예시를 통해 여러 프롬프트 방식으로 다양한 이미지 결과물을 생성할 수 있다는 것을 보실 수 있습니다.", icon="ℹ")
+    st.info("여기에 나오는 예시들은 Outpainting 기능으로 이미지의 가장자리를 확장하여 새로운 컨텐츠를 추가하는 기술을 보실 수 있습니다.", icon="ℹ")
     st.markdown("## Prompt Techniques")
     st.markdown("다음과 같은 Prompt 방법들이 이미지 생성 개선에 도움이 될 수 있습니다.")
     st.markdown(
@@ -257,31 +258,31 @@ def examples():
         },
     }
 
-    exampleContent(
+    example_content(
         "images/1_handbag.png",
         prompt_input_vals,
         "handbag"
     )
     st.divider()
-    exampleContent(
+    example_content(
         "images/2_tumbler.png", 
         prompt_input_vals,
         "tumbler"
     )
     st.divider()
-    exampleContent(
+    example_content(
         "images/3_sofa.png", 
         prompt_input_vals,
         "sofa"
     )
     st.divider()
-    exampleContent(
+    example_content(
         "images/4_running_shoes.png", 
         prompt_input_vals,
         "shoes"
     )
     st.divider()
-    exampleContent(
+    example_content(
         "images/5_coffee_maker.png", 
         prompt_input_vals,
         "coffee_maker"

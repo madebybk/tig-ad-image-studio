@@ -6,15 +6,17 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as fs from 'fs';
 import * as path from 'path';
 
-interface WebStackProps extends cdk.StackProps {
+interface WebAppStackProps extends cdk.StackProps {
   api_url: string;
+  s3_bucket_name: string;
 }
 
 export class WebAppStack extends Stack {
-  constructor(scope: Construct, id: string, props?: WebStackProps) {
+  constructor(scope: Construct, id: string, props: WebAppStackProps) {
     super(scope, id, props);
 
-    const api_url = props?.api_url
+    const api_url = props.api_url;
+    const s3_bucket_name = props.s3_bucket_name;
 
     // IAM Role to access EC2
     const instanceRole = new iam.Role(this, 'InstanceRole', {
@@ -52,7 +54,13 @@ export class WebAppStack extends Stack {
     const userData = ec2.UserData.forLinux();
     const userDataScript = fs.readFileSync(path.join(__dirname, 'userdata.sh'), 'utf8');
     userData.addCommands(userDataScript);
-    userData.addCommands(`export API_URL=${api_url}`);
+    userData.addCommands(`
+      sudo sed -i '/Environment=/d' /etc/systemd/system/streamlit.service
+      sudo sed -i '/ExecStart=/i Environment=API_URL=${api_url}' /etc/systemd/system/streamlit.service
+      sudo sed -i '/ExecStart=/i Environment=S3_BUCKET_NAME=${s3_bucket_name}' /etc/systemd/system/streamlit.service
+      sudo systemctl daemon-reload
+      sudo systemctl restart streamlit
+    `);
 
     // EC2 instance
     const webAppInstance = new ec2.Instance(this, 'webAppInstance', {

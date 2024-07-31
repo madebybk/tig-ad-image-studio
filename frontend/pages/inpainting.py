@@ -83,6 +83,8 @@ def inpainting_content(input_image, prompt_input_vals, content_key, is_val_fille
                 **get_input_params(is_val_filled, prompt_input_vals[content_key]["prompt_additional"])
             )
 
+            num_output_images = st.slider("생성할 이미지 개수", min_value=1, max_value=5, step=1, value=5, key=f'slider_${content_key}')
+
             prompt_text = "{" + f"""
             "주요 대상": {mask_prompt},
             "배경/환경": {prompt_background},
@@ -115,16 +117,9 @@ def inpainting_content(input_image, prompt_input_vals, content_key, is_val_fille
                     image_bytes=image_bytes,
                     painting_mode="INPAINTING",
                     masking_mode="Prompt",
-                    mask_prompt=mask_prompt 
+                    mask_prompt=mask_prompt,
+                    num_output_images=num_output_images
                 )
-                # # Get generated images, translated masking prompt, and translated prompt text
-                # bedrock_output = glib.get_image_from_model(
-                #     prompt_content=prompt_text, 
-                #     image_bytes=image_bytes,
-                #     painting_mode="INPAINTING",
-                #     masking_mode="Prompt",
-                #     mask_prompt=mask_prompt
-                # ) 
                 
                 st.session_state[content_key] = bedrock_output
                 

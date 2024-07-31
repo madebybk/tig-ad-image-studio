@@ -4,14 +4,18 @@
 sudo apt-get update -y
 
 # Install required packages
-sudo apt-get install -y ec2-instance-connect git python3-pip python3.8-venv
+sudo apt-get install -y ec2-instance-connect
+sudo apt-get install -y git
+sudo apt-get install -y python3-pip
+sudo apt-get install -y python3.8-venv
 
 # Clone repository
 cd /home/ubuntu
 git clone https://github.com/madebybk/tig-ad-image-studio.git
 
 # Create virtual environment
-python3 -m venv --copies /home/ubuntu/my_env
+sudo apt-get install -y python3.8-venv
+sudo python3 -m venv --copies /home/ubuntu/my_env
 sudo chown -R ubuntu:ubuntu /home/ubuntu/my_env
 source /home/ubuntu/my_env/bin/activate
 

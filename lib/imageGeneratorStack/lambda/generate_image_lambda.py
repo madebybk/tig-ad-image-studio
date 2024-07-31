@@ -4,35 +4,63 @@ import base64
 from PIL import Image
 from io import BytesIO
 from random import randint
+import time
+import uuid
+
+s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
+    # Check if the request is health check
+    if event.get('httpMethod') == 'GET' and event.get('path') == '/health':
+        return health_check()
+
     # Parse input from the event
     body = json.loads(event['body'])
     prompt_content = body['prompt_content']
-    image_bytes = base64.b64decode(body['image_bytes'])
+    s3_bucket_name = body['s3_bucket_name']
+    image_url = body['image_url']
     painting_mode = body['painting_mode']
     masking_mode = body['masking_mode']
-    mask_bytes = base64.b64decode(body['mask_bytes']) if 'mask_bytes' in body else None
     mask_prompt = body['mask_prompt'] if 'mask_prompt' in body else None
+    num_output_images = body['num_output_images']
+    print("Lambda invoked with painting mode..", painting_mode)
+
+    image_bytes = download_from_s3(image_url)
 
     # Process the image
-    result = get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt)
+    result = get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_prompt, num_output_images)
     
     # Prepare the response
-    output_images = [base64.b64encode(img.getvalue()).decode('utf-8') for img in result[0]]
+    output_image_urls = upload_images_to_s3(result[0], s3_bucket_name)
+
     response = {
         'statusCode': 200,
         'body': json.dumps({
-            'images': output_images,
+            'image_urls': output_image_urls,
             'translated_mask_prompt': result[1],
             'translated_prompt_content': result[2]
         }),
         'headers': {
+            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
         }
     }
     
     return response
+
+def download_from_s3(s3_url):
+    bucket_name = s3_url.split('/')[2]
+    key = '/'.join(s3_url.split('/')[3:])
+    response = s3.get_object(Bucket=bucket_name, Key=key)
+    return response['Body'].read()
+
+def upload_images_to_s3(images, s3_bucket_name):
+    urls = []
+    for img in images:
+        key = f"output/{uuid.uuid4()}.png"
+        s3.put_object(Bucket=s3_bucket_name, Key=key, Body=img.getvalue())
+        urls.append(f"s3://{s3_bucket_name}/{key}")
+    return urls
 
 # Utility functions
 
@@ -172,16 +200,16 @@ def get_claude_inpainting_prompt_content_request_body(prompt_content):
 
     return json.dumps(body)
 
-def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, mask_prompt):
+def get_titan_image_masking_request_body(prompt_content, image_bytes, painting_mode, masking_mode, mask_prompt, num_output_images):
     original_image = get_image_from_bytes(image_bytes)
     target_width, target_height = original_image.size
     image_base64 = get_base64_from_bytes(image_bytes)
-    mask_base64 = get_base64_from_bytes(mask_bytes) if mask_bytes else None
+    mask_base64 = None
     
     body = {
         "taskType": painting_mode,
         "imageGenerationConfig": {
-            "numberOfImages": 5,
+            "numberOfImages": num_output_images,
             "quality": "premium",
             "height": target_height,
             "width": target_width,
@@ -217,7 +245,7 @@ def get_titan_response_image(response):
         image_data_list.append(BytesIO(image_data))
     return image_data_list
 
-def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes=None, mask_prompt=None):
+def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_prompt=None, num_output_images=5):
     bedrock = boto3.client(service_name='bedrock-runtime')
 
     mask_prompt_request_body = get_claude_mask_prompt_request_body(mask_prompt)
@@ -226,16 +254,35 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     else:
         prompt_content_request_body = get_claude_inpainting_prompt_content_request_body(prompt_content)
 
+    start = time.time()
+    print("Current time:", start)
+    print("Invoking Claude v3 Sonnet on Amazon Bedrock..")
     mask_prompt_response = bedrock.invoke_model(body=mask_prompt_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
     prompt_content_response = bedrock.invoke_model(body=prompt_content_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
 
     translated_mask_prompt = get_claude_response_text(mask_prompt_response)
     translated_prompt_content = get_claude_response_text(prompt_content_response)
 
-    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, mask_bytes, translated_mask_prompt)
+    after_claude_time = time.time() - start
+    print("after claude execution:", after_claude_time)
+
+    image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, translated_mask_prompt, num_output_images)
     
+    print("Invoking Amazon Titan Image Generator on Amazon Bedrock..")
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
+
+    after_titan_time = time.time() - start
+    print("after titan execution:", after_titan_time)
     
     output_image = get_titan_response_image(response)
     
     return [output_image, translated_mask_prompt, translated_prompt_content]
+
+def health_check():
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Healthy'),
+        'headers': {
+            'Content-Type': 'application/json'
+        }
+    }

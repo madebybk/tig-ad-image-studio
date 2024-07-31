@@ -7,7 +7,8 @@ from io import BytesIO
 from random import randint
 import requests
 
-API_URL = os.environ.get("API_URL")
+# API_URL = os.environ.get("API_URL")
+API_URL = "http://TIGAdI-Gener-1MUZxOn7uZMS-1921405415.us-west-2.elb.amazonaws.com"
 
 
 def get_bytesio_from_bytes(image_bytes):

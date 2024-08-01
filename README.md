@@ -4,6 +4,8 @@
 
 Amazon Titan Image Generator(TIG)를 사용하여 실제 상품으로 맞춤 광고 이미지 만들는 작업을 할 수 있습니다.
 
+이 프로젝트를 AWS 환경에 배포 후 실제 제품의 사진을 사용해 이미지를 광고 이미지를 생성할 수 있습니다.
+
 ## Architecture
 ![Demo Architecture](frontend/images/Demo-Architecture.png)
 

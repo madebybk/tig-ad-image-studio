@@ -182,7 +182,7 @@ def inpainting():
         },
         "sofa_rug": {
             "mask_prompt": "바닥에 있는 러그",
-            "prompt_original": "현대적인 거실 이미지, 중앙에 검은 녹색 패브릭 소파가 있고 바닥에 베이지색 러그가 있음",
+            "prompt_original": "현대적인 거실 이미지, 중앙에 녹색 패브릭 소파가 있고 바닥에 베이지색 러그가 있음",
             "prompt_new": "기존의 베이지색 러그를 핑크색 러그로 변경",
             "prompt_style": "깔끔하고 세련된 스타일 유지",
             "prompt_atmosphere": "밝고 깨끗한 느낌",

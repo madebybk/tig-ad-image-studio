@@ -11,13 +11,3 @@ Amazon Titan Image Generator(TIG)를 사용하여 실제 상품으로 맞춤 광
 
 1. Claude Sonnet v3는 다양한 User Input 기반으로 이미지 생성 프롬프트를 작성해 줍니다.
 2. Amazon TIG는 생성된 프롬프트 기반으로 이미지 생성을 합니다.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
-# tig-ad-image-studio

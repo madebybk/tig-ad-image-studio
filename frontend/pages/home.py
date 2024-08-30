@@ -16,7 +16,7 @@ def home():
     st.success('''이 도구는 TIG의 Outpainting 기능을 활용해 기존 이미지의 가장자리를 확장하여 새로운 컨텐츠를 추가하는 방식을 사용합니다. Outpainting 기능은 위 "이미지 생성 예시" 탭에서 더 자세히 보실 수 있습니다.''')
     
     outpainting_prompt_input_vals = {
-        "handbag": {
+        "handbag_homepage": {
             "mask_prompt": "핸드백",
             "prompt_background": "고급 부티크 매장",
             "prompt_lighting": "천장의 매입등에서 나오는 부드럽고 따뜻한 조명",
@@ -34,7 +34,7 @@ def home():
     outpainting_content(
         input_image="images/1_handbag.png",
         prompt_input_vals=outpainting_prompt_input_vals,
-        content_key="handbag",
+        content_key="handbag_homepage",
         is_val_filled=False
     )
 
@@ -45,7 +45,7 @@ def home():
     st.success('''이 도구는 TIG의 Inpainting 기능을 활용해 기존 이미지의 특정 부분을 채우거나 수정하는 기술을 보실 수 있습니다. Inpainting 기능은 위 "이미지 수정 예시" 탭에서 더 자세히 보실 수 있습니다.''')
 
     inpainting_prompt_input_vals = {
-        "apartment": {
+        "apartment_homepage": {
             "mask_prompt": "거실 중앙의 검은 테이블",
             "prompt_original": "현대적인 아파트 거실 이미지, 중앙에 검은 테이블이 있음",
             "prompt_new": "기존의 검은 테이블을 광택 있는 흰색 대리석 테이블로 변경",
@@ -59,6 +59,6 @@ def home():
     inpainting_content(
         input_image="images/6_apartment.png",
         prompt_input_vals=inpainting_prompt_input_vals,
-        content_key="apartment",
+        content_key="apartment_homepage",
         is_val_filled=False
     )

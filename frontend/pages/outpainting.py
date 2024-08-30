@@ -130,11 +130,14 @@ def outpainting_content(input_image, prompt_input_vals, content_key, is_val_fill
                 key=f"generate_button_{content_key}"
             )
 
+            if generate_button and mask_prompt == "":
+                st.error("필수 사항을 입력해주세요")
+
     # Main content area (right column)
     with col_main:
         st.subheader("Result")
         
-        if generate_button:
+        if generate_button and mask_prompt != "":
             with st.spinner("이미지 생성 중... (30초 정도 걸릴 수 있습니다)"):
                 if uploaded_image_file:
                     image_bytes = uploaded_image_file.getvalue()

@@ -257,8 +257,8 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     start = time.time()
     print("Current time:", start)
     print("Invoking Claude v3 Sonnet on Amazon Bedrock..")
-    mask_prompt_response = bedrock.invoke_model(body=mask_prompt_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
-    prompt_content_response = bedrock.invoke_model(body=prompt_content_request_body, modelId="anthropic.claude-3-sonnet-20240229-v1:0")
+    mask_prompt_response = bedrock.invoke_model(body=mask_prompt_request_body, modelId="anthropic.claude-3-5-sonnet-20240620-v1:0")
+    prompt_content_response = bedrock.invoke_model(body=prompt_content_request_body, modelId="anthropic.claude-3-5-sonnet-20240620-v1:0")
 
     translated_mask_prompt = get_claude_response_text(mask_prompt_response)
     translated_prompt_content = get_claude_response_text(prompt_content_response)
@@ -269,7 +269,7 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     image_request_body = get_titan_image_masking_request_body(translated_prompt_content, image_bytes, painting_mode, masking_mode, translated_mask_prompt, num_output_images)
     
     print("Invoking Amazon Titan Image Generator on Amazon Bedrock..")
-    response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v1", contentType="application/json", accept="application/json")
+    response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v2:0", contentType="application/json", accept="application/json")
 
     after_titan_time = time.time() - start
     print("after titan execution:", after_titan_time)

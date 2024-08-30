@@ -7,7 +7,6 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as targets from 'aws-cdk-lib/aws-elasticloadbalancingv2-targets';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as apigw from 'aws-cdk-lib/aws-apigateway';
 
 export class ImageGenerationStack extends Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -37,7 +36,7 @@ export class ImageGenerationStack extends Stack {
         const generateImageLambda = new lambda.DockerImageFunction(this, 'GenerateImageLambda', {
             code: lambda.DockerImageCode.fromImageAsset("./lib/imageGeneratorStack/lambda"),
             timeout: cdk.Duration.minutes(3),
-            memorySize: 10240,
+            memorySize: 2560,
             architecture: lambda.Architecture.ARM_64,
             initialPolicy: [bedrockFullAccess],
             vpc: vpc

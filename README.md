@@ -19,14 +19,31 @@ Amazon Titan Image Generator(TIG) G1 v2를 사용하여 실제 상품으로 맞�
 
 샘플 데모 영상은 [여기](https://d39see23shaae8.cloudfront.net/TIG_Ad_Studio_Demo_BHK.mp4)서 볼 수 있습니다.
 
+## 사전 요구사항
+
+1. Docker 엔진이 실행되고 있는지 확인합니다.
+
+2. AWS CDK를 설치합니다.
+
+3. Amazon Bedrock에서 Model Access를 요청합니다.
+
+- Anthropic Claude Sonnet v3.5
+
+- Amazon Titan Image Generator G1 v2
+
 ## Deploy the CDK Stack
 
-CDK를 [여기] 설명된 대로 설정하고 아래 명령어를 사용하여 모든 Dependency를 설치합니다. 
+CDK를 [여기](https://docs.aws.amazon.com/ko_kr/cdk/v2/guide/getting_started.html)에 설명된 대로 설정하고 아래 명령어를 사용하여 모든 Dependency를 설치합니다. 
 
 ```
 git clone https://github.com/madebybk/tig-ad-image-studio.git
 npm install
 npm run build
+```
+
+(CDK 배포가 처음이면) AWS CDK 애플리케이션을 CloudFormation 코드로 컴파일합니다.
+```
+cdk synth
 ```
 
 AWS 계정에 스택을 배포합니다.

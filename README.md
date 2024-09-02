@@ -23,7 +23,7 @@ Amazon Titan Image Generator(TIG) G1 v2를 사용하여 실제 상품으로 맞�
 
 1. [Docker 엔진](https://docs.docker.com/engine/install/)이 실행되고 있는지 확인합니다.
 
-2. Amazon Bedrock에서 [Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)를 요청합니다.
+2. Amazon Bedrock에서 아래 두 가지 모델의 [Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)를 요청합니다.
 
 > [!IMPORTANT]
 > 꼭 미국 오레곤(us-west-2) 리전을 선택하세요
@@ -40,7 +40,6 @@ CDK를 [여기](https://docs.aws.amazon.com/ko_kr/cdk/v2/guide/getting_started.h
 git clone https://github.com/madebybk/tig-ad-image-studio.git
 cd tig-ad-image-studio
 npm install
-npm run build
 ```
 
 AWS CDK 애플리케이션을 CloudFormation 코드로 컴파일합니다.

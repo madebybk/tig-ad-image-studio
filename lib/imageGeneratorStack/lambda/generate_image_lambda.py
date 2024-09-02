@@ -270,6 +270,7 @@ def get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mod
     
     print("Invoking Amazon Titan Image Generator on Amazon Bedrock..")
     response = bedrock.invoke_model(body=image_request_body, modelId="amazon.titan-image-generator-v2:0", contentType="application/json", accept="application/json")
+    print("Claude output:", response)
 
     after_titan_time = time.time() - start
     print("after titan execution:", after_titan_time)

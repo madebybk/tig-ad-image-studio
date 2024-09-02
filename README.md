@@ -21,11 +21,12 @@ Amazon Titan Image Generator(TIG) G1 v2를 사용하여 실제 상품으로 맞�
 
 ## 사전 요구사항
 
-1. Docker 엔진이 실행되고 있는지 확인합니다.
+1. [Docker 엔진](https://docs.docker.com/engine/install/)이 실행되고 있는지 확인합니다.
 
-2. AWS CDK를 설치합니다.
+2. Amazon Bedrock에서 [Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)를 요청합니다.
 
-3. Amazon Bedrock에서 Model Access를 요청합니다.
+> [!IMPORTANT]
+> 꼭 us-west-2 리전을 선택하세요
 
 - Anthropic Claude Sonnet v3.5
 

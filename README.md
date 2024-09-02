@@ -26,7 +26,7 @@ Amazon Titan Image Generator(TIG) G1 v2를 사용하여 실제 상품으로 맞�
 2. Amazon Bedrock에서 [Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)를 요청합니다.
 
 > [!IMPORTANT]
-> 꼭 us-west-2 리전을 선택하세요
+> 꼭 미국 오레곤(us-west-2) 리전을 선택하세요
 
 - Anthropic Claude Sonnet v3.5
 
@@ -38,20 +38,26 @@ CDK를 [여기](https://docs.aws.amazon.com/ko_kr/cdk/v2/guide/getting_started.h
 
 ```
 git clone https://github.com/madebybk/tig-ad-image-studio.git
+cd tig-ad-image-studio
 npm install
 npm run build
 ```
 
-(CDK 배포가 처음이면) AWS CDK 애플리케이션을 CloudFormation 코드로 컴파일합니다.
+AWS CDK 애플리케이션을 CloudFormation 코드로 컴파일합니다.
 ```
 cdk synth
 ```
 
+AWS 환경에 CDK Toolkit을 위한 스택을 배포합니다.
+```
+cdk bootstrap
+```
+
 AWS 계정에 스택을 배포합니다.
 ```
-cdk deploy
+cdk deploy --all
 ```
 
 ## 웹 애플리케이션에 접속하기
 
-배포가 완료되면 `TIGAdImageStudio-WebAppStack.webAppUrl`이라는 Output을 제공합니다. 이 IP 주소를 브라우저 입력창에 입력하여 TIG Ad Studio에 접속합니다.
+배포가 완료되면 `TIGAdImageStudio-WebAppStack.webAppUrl`이라는 Output을 제공합니다. 이 IP 주소를 브라우저 입력창에 입력하여 TIG Ad Studio에 접속합니다. (인스턴스 프로비저닝 시간이 필요하므로 바로 접속이 안 되면 2~3분 후에 다시 시도해 주시기 바랍니다.)

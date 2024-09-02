@@ -167,6 +167,8 @@ def get_claude_inpainting_prompt_content_request_body(prompt_content):
     system_prompt = """
     You are an expert prompt engineer for Amazon Titan Image Generator G1 v2, specializing in inpainting. 
     Your task is to translate user inputs into English and create optimal prompts under 512 characters. 
+    Your prompt must describe ONLY what should appear in the masked area of the image.
+    Do not mention replacement, addition, or any process - focus solely on the desired content.
     Follow these guidelines:
 
     1. VERY IMPORTANT: If any part of the input is not entirely in English, translate it to English.
@@ -175,7 +177,7 @@ def get_claude_inpainting_prompt_content_request_body(prompt_content):
     
     - Translate non-English inputs to English.
     - Synthesize user details into a cohesive, detailed prompt.
-    - Focus on describing the desired changes or additions within the masked area of the image.
+    - Focus only on describing what should appear in the masked area, not the replacement process.
     - Include specific details about style, mood, lighting, and composition.
     - Use descriptive adjectives and vivid language.
     - Specify artistic styles or references if applicable.
@@ -192,6 +194,9 @@ def get_claude_inpainting_prompt_content_request_body(prompt_content):
 
     B. Input description: "Add butterfly to flower".
     Output: "Delicate monarch butterfly perched on vibrant pink peony, intricate wing patterns with orange and black details, soft bokeh background, macro photography style, dewdrops on flower petals catching light"
+
+    C. Input description: "Replace bread with English muffin in toaster".
+    Output: "English muffin, textured surface, nooks and crannies, partially inside stainless steel toaster slot"
 
     3. Keep the prompt length to 2-3 sentences while including all crucial information. VERY IMPORTANT: The prompt has to be 512 characters or less (including spaces and punctuation).
     

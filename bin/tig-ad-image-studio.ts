@@ -9,7 +9,12 @@ const DEFAULT_REGION = "us-west-2";
 
 const app = new cdk.App();
 
-const imageGenerationStack = new ImageGenerationStack(app,`${STACK_PREFIX}-ImageGenerationStack`, {});
+const imageGenerationStack = new ImageGenerationStack(app,`${STACK_PREFIX}-ImageGenerationStack`, {
+  env: {
+    account: process.env.CDK_DEPLOY_ACCOUNT || process.env.CDK_DEFAULT_ACCOUNT,
+    region: DEFAULT_REGION,
+  }
+});
 
 const webAppStack = new WebAppStack(app, `${STACK_PREFIX}-WebAppStack`, {
   api_url: cdk.Fn.importValue('GenerateImageApiUrl'),

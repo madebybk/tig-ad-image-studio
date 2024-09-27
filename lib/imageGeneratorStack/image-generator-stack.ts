@@ -21,10 +21,13 @@ export class ImageGenerationStack extends Stack {
         });
     
         // ImageGenerator Lambda
-        const bedrockFullAccess = new iam.PolicyStatement({
+        const bedrockInvokeAccess = new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
-            actions: ["bedrock:*"],
-            resources: ["*"],
+            actions: ["bedrock:InvokeModel"],
+            resources: [
+                `arn:aws:bedrock:${this.region}::foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0`,
+                `arn:aws:bedrock:${this.region}::foundation-model/amazon.titan-image-generator-v2:0`
+            ],
         }); 
 
         // VPC for Application Load Balancer (ALB)
@@ -38,7 +41,7 @@ export class ImageGenerationStack extends Stack {
             timeout: cdk.Duration.minutes(3),
             memorySize: 2560,
             architecture: lambda.Architecture.ARM_64,
-            initialPolicy: [bedrockFullAccess],
+            initialPolicy: [bedrockInvokeAccess],
             vpc: vpc
         });
 

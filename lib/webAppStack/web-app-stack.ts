@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -18,13 +19,15 @@ export class WebAppStack extends Stack {
     const api_url = props.api_url;
     const s3_bucket_name = props.s3_bucket_name;
 
+    // Reference the S3 bucket for image storage
+    const s3_bucket = s3.Bucket.fromBucketName(this, 'ImagesBucket', s3_bucket_name);
+
     // IAM Role to access EC2
     const instanceRole = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'),
-      ],
     });
+
+    s3_bucket.grantReadWrite(instanceRole);
 
     // Network setting for EC2
     const defaultVpc = ec2.Vpc.fromLookup(this, 'VPC', {

@@ -29,7 +29,7 @@ def inpainting_content(input_image, prompt_input_vals, content_key, is_val_fille
                 key=f"file_uploader_{content_key}"
             )
 
-            st.warning("이미지 크기 제한이 있습니다. [Amazon TIG 공식 문서](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html#w315aac17c27c15b9b7c21b5b7)를 따라주세요.")
+            st.warning("이미지 크기에 제한이 있습니다. [Amazon TIG 공식 문서](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html#w315aac17c27c15b9b7c21b5b7)에 따라 모델이 허용하는 이미지 크기로 입력해 주세요.")
             
             if uploaded_image_file:
                 uploaded_image_preview = glib.get_bytesio_from_bytes(uploaded_image_file.getvalue())

@@ -60,3 +60,7 @@ cdk deploy --all
 ## 웹 애플리케이션에 접속하기
 
 배포가 완료되면 `TIGAdImageStudio-WebAppStack.webAppUrl`이라는 Output을 제공합니다. 이 IP 주소를 브라우저 입력창에 입력하여 TIG Ad Studio에 접속합니다. (인스턴스 프로비저닝 시간이 필요하므로 바로 접속이 안 되면 2~3분 후에 다시 시도해 주시기 바랍니다.)
+
+## Troubleshooting
+
+1. "400 Bad Request: Value of (width, height) is not valid. Given: (1280, 1294)."와 같은 에러 메시지는 인풋 이미지 크기 관련 에러입니다. [Amazon TIG 공식 문서](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html#w315aac17c27c15b9b7c21b5b7)따라 모델이 허용하는 이미지 크기로 다시 입력해 주세요.

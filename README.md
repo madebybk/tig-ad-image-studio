@@ -59,4 +59,18 @@ cdk deploy --all
 
 ## 웹 애플리케이션에 접속하기
 
-배포가 완료되면 `TIGAdImageStudio-WebAppStack.webAppUrl`이라는 Output을 제공합니다. 이 IP 주소를 브라우저 입력창에 입력하여 TIG Ad Studio에 접속합니다. (인스턴스 프로비저닝 시간이 필요하므로 바로 접속이 안 되면 2~3분 후에 다시 시도해 주시기 바랍니다.)
+배포가 완료되면 `TIGAdImageStudio-WebAppStack.webAppUrl`이라는 Output을 제공합니다. 이 IP 주소를 브라우저 입력창에 입력하여 TIG Ad Studio에 접속합니다. (인스턴스 프로비저닝 시간이 필요하므로 바로 접속이 안 되면 3~4분 후에 다시 시도해 주시기 바랍니다.)
+
+## 리소스 정리
+
+데모를 삭제하려면 먼저 Amazon S3 Bucket에서 생성된 Bucket을 비우고 CloudFormation에서 생성된 Stack을 Delete 합니다.
+
+1. [Amazon S3](https://us-west-2.console.aws.amazon.com/s3/buckets?region=us-west-2) 페이지로 이동해서 **titan-ad-studio-bucket-**으로 시작하는 Bucket을 찾습니다.
+
+2. **Empty** 버튼을 눌러 S3 Bucket에 있는 모든 파일들을 삭재합니다.
+
+3. [Amazon CloudFront](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/getting-started) 페이지로 이동해서 `TIGAdImageStudio-WebAppStack`과 `TIGAdImageStudio-ImageGenerationStack` 스택을 Delete 합니다.
+
+## Troubleshooting
+
+1. "400 Bad Request: Value of (width, height) is not valid. Given: (1280, 1294)."와 같은 에러 메시지는 인풋 이미지 크기 관련 에러입니다. [Amazon TIG 공식 문서](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html#w315aac17c27c15b9b7c21b5b7)따라 모델이 허용하는 이미지 크기로 다시 입력해 주세요.

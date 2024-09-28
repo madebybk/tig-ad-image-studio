@@ -63,7 +63,7 @@ def query_generate_image_lambda(prompt_content, image_bytes, painting_mode, mask
 
     response = requests.post(API_URL, json=payload)
 
-    if response.status_code == 200: 
+    if response.status_code == 200:
         result = response.json()
         image_urls = result['image_urls']
         translated_mask_prompt = result['translated_mask_prompt']
@@ -79,6 +79,6 @@ def query_generate_image_lambda(prompt_content, image_bytes, painting_mode, mask
     
         return [output_images, translated_mask_prompt, translated_prompt_content]
     else:
-        raise Exception(f"API call failed with status code {response.status_code}: {response.text}")
-
-    
+        error_message = response.json().get('error', 'Unknown error occurred')
+        raise Exception(f"API call failed: {error_message}")
+ 

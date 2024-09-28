@@ -65,11 +65,9 @@ cdk deploy --all
 
 데모를 삭제하려면 먼저 Amazon S3 Bucket에서 생성된 Bucket을 비우고 CloudFormation에서 생성된 Stack을 Delete 합니다.
 
-1. [Amazon S3](https://us-west-2.console.aws.amazon.com/s3/buckets?region=us-west-2) 페이지로 이동해서 **titan-ad-studio-bucket-**으로 시작하는 Bucket을 찾습니다.
+1. [Amazon S3](https://us-west-2.console.aws.amazon.com/s3/buckets?region=us-west-2) 페이지로 이동해서 **titan-ad-studio-bucket**으로 시작하는 Bucket을 찾습니다. **Empty** 버튼을 눌러 S3 Bucket에 있는 모든 파일들을 삭재합니다.
 
-2. **Empty** 버튼을 눌러 S3 Bucket에 있는 모든 파일들을 삭재합니다.
-
-3. [Amazon CloudFront](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/getting-started) 페이지로 이동해서 `TIGAdImageStudio-WebAppStack`과 `TIGAdImageStudio-ImageGenerationStack` 스택을 Delete 합니다.
+2. [Amazon CloudFront](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/getting-started) 페이지로 이동해서 `TIGAdImageStudio-WebAppStack`과 `TIGAdImageStudio-ImageGenerationStack` 스택을 Delete 합니다.
 
 ## Troubleshooting
 

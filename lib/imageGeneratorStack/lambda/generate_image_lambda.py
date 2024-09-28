@@ -10,43 +10,50 @@ import uuid
 s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
-    # Check if the request is health check
-    if event.get('httpMethod') == 'GET' and event.get('path') == '/health':
-        return health_check()
+    try:
+        # Health check logic
+        if event.get('httpMethod') == 'GET' and event.get('path') == '/health':
+            return health_check()
 
-    # Parse input from the event
-    body = json.loads(event['body'])
-    prompt_content = body['prompt_content']
-    s3_bucket_name = body['s3_bucket_name']
-    image_url = body['image_url']
-    painting_mode = body['painting_mode']
-    masking_mode = body['masking_mode']
-    mask_prompt = body['mask_prompt'] if 'mask_prompt' in body else None
-    num_output_images = body['num_output_images']
-    print("Lambda invoked with painting mode..", painting_mode)
+        # Existing logic
+        body = json.loads(event['body'])
+        prompt_content = body['prompt_content']
+        s3_bucket_name = body['s3_bucket_name']
+        image_url = body['image_url']
+        painting_mode = body['painting_mode']
+        masking_mode = body['masking_mode']
+        mask_prompt = body.get('mask_prompt')
+        num_output_images = body['num_output_images']
+        print("Lambda invoked with painting mode..", painting_mode)
 
-    image_bytes = download_from_s3(image_url)
+        image_bytes = download_from_s3(image_url)
+        result = get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_prompt, num_output_images)
+        output_image_urls = upload_images_to_s3(result[0], s3_bucket_name)
 
-    # Process the image
-    result = get_image_from_model(prompt_content, image_bytes, painting_mode, masking_mode, mask_prompt, num_output_images)
-    
-    # Prepare the response
-    output_image_urls = upload_images_to_s3(result[0], s3_bucket_name)
-
-    response = {
-        'statusCode': 200,
-        'body': json.dumps({
-            'image_urls': output_image_urls,
-            'translated_mask_prompt': result[1],
-            'translated_prompt_content': result[2]
-        }),
-        'headers': {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json'
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'image_urls': output_image_urls,
+                'translated_mask_prompt': result[1],
+                'translated_prompt_content': result[2]
+            }),
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
         }
-    }
-    
-    return response
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return {
+            'statusCode': 500,
+            'body': json.dumps({
+                'error': str(e)
+            }),
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
+        }
 
 def download_from_s3(s3_url):
     bucket_name = s3_url.split('/')[2]
